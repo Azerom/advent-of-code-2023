@@ -10,38 +10,16 @@ try
         string? line;
         while ((line = sr.ReadLine()) != null)
         {
-
-            if (line != null)
-            {
                 var numbersText = Regex.Matches(line, numberPattern);
 
                 var digitInLine = numbersText.Select(n =>
                 {
+                    IEnumerable<Group> groups = n.Groups.Cast<Group>();
 
-                    foreach (Group item in n.Groups)
-                    {
-                        if (!string.IsNullOrEmpty(item.Value))
-                        {
-                            if (char.IsDigit(item.Value.First()))
-                            {
-                                return item.Value.First().ToString();
-                            }
-                            else
-                            {
-                                return TextToNumber(item.Value).ToString();
-                            }
-                        }
-                    }
-
-                    return "";
-
+                    return TextToNumber(groups.First(g => !string.IsNullOrEmpty(g.Value)).Value);
                 });
 
-                var lineNumber = int.Parse($"{digitInLine.First()}{digitInLine.Last()}");
-
-                result += lineNumber;
-            }
-
+                result += int.Parse($"{digitInLine.First()}{digitInLine.Last()}");
         }
 
         Console.WriteLine(result);
@@ -66,6 +44,6 @@ static int TextToNumber(string text)
         "seven" => 7,
         "eight" => 8,
         "nine" => 9,
-        _ => 0,
+        _ => int.Parse(text),
     };
 }
