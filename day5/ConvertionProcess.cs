@@ -10,10 +10,10 @@
         }
 
         public long Convert(long source)
-            => Process<long>(source, (c, s) => c.Convert(s));
+            => Process(source, (c, s) => c.Convert(s));
 
-        public IEnumerable<Range> ConvertRange(Range range) 
-            => Process<IEnumerable<Range>>([range], (c, s) => c.ConvertRangeList(s));
+        public IEnumerable<Range> ConvertRanges(IEnumerable<Range> ranges) 
+            => Process(ranges, (c, s) => c.ConvertRangeList(s));
 
         private T Process<T>(T source, Func<Convertor, T, T> operation)
         {

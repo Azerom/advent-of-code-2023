@@ -54,7 +54,7 @@ namespace day5
                 watch.Restart();
                 Console.WriteLine("- Part 2 :");
 
-                var part2Result = part2Seeds.Select(s => process.ConvertRange(s)).Min(s => s.Min(r => r.First));
+                var part2Result = process.ConvertRanges(part2Seeds).Min(r => r.First);
 
                 watch.Stop();
                 Console.WriteLine($"The lowest location number is n°{part2Result} in {watch.ElapsedMilliseconds} ms");
@@ -68,7 +68,7 @@ namespace day5
 
         private static Convertor BuildConvertorFromMatch(Match match, string groupName)
         {
-            return Convertor.FromStrings(match.Groups[groupName].Captures.Select(c => c.Value));
+            return Convertor.FromStrings(match.Groups[groupName].Captures.Select(c => c.Value), groupName);
         }
     }
 }

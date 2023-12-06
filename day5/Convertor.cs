@@ -13,12 +13,15 @@ namespace day5
 
         public IEnumerable<Map> Maps { get; set; }
 
-        public Convertor(IEnumerable<Map> maps)
+        public string Name { get; set; }
+
+        public Convertor(IEnumerable<Map> maps, string name)
         {
             Maps = maps;
+            Name = name;
         }
 
-        public static Convertor FromStrings(IEnumerable<string> strings)
+        public static Convertor FromStrings(IEnumerable<string> strings, string name)
         {
             var maps = strings.Select(s =>
             {
@@ -30,12 +33,12 @@ namespace day5
 
                 return new Map(source, source + lenght - 1, destination, destination + lenght - 1);
             });
-            return new Convertor(maps);
+            return new Convertor(maps, name);
         }
 
         public long Convert(long sourceId)
         {
-            var map = Maps.FirstOrDefault(m => m.SourceFirst <= sourceId && sourceId <= m.SourceLast);
+            Map? map = Maps.FirstOrDefault(m => m.SourceFirst <= sourceId && sourceId <= m.SourceLast);
 
             return Convert(sourceId, map);
         }
@@ -54,6 +57,15 @@ namespace day5
                 result.AddRange(ConvertRange(range));
             }
 
+            //Note: il est possible que deux Range dans l'enumeration soit continues, une amelioration serait de les identifier et fussioner
+
+            //On retire de la liste les ranges contenues dans une autre (Ca fait perdre des perfs en vrai mais c'est cool)
+            result.RemoveAll(testedRange => result.Any(
+                containingRange => containingRange.First <= testedRange.First 
+                    && testedRange.Last <= containingRange.Last 
+                    && containingRange != testedRange));
+
+            Console.WriteLine($"  - {Name} convertor : from {sourceRange.Count()} to {result.Count} ranges");
             return result;
         }
 
